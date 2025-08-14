@@ -1,62 +1,114 @@
-import { Injectable } from '@nestjs/common';
+// // // import { Injectable } from '@nestjs/common';
+// // import { InjectRepository } from '@nestjs/typeorm';
+// // import { Repository } from 'typeorm';
+// // import { User } from 'src/entities/user.entity';
+// // import { Injectable } from '@nestjs/common';
 
-type User = {
-  id: number; //*UUID
-  email: string;
-  name: string;
-  password: string;
-  address: string;
-  phone: string;
-  country?: string | undefined;
-  city?: string | undefined;
-};
+// // @Injectable()
+// // export class UsersRepository {
+// //   constructor(
+// //     @InjectRepository(User)
+// //     private readonly usersRepo: Repository<User>,
+// //   ) {}
 
-const users: User[] = [
-  {
-    id: 1,
-    name: 'Freddie Mercury',
-    email: 'freddie@queen.com',
-    password: 'bohemian123',
-    address: 'Kensington, London',
-    phone: '1234567890',
-  },
-  {
-    id: 2,
-    name: 'David Bowie',
-    email: 'bowie@starman.net',
-    password: 'ziggy456',
-    address: 'Brixton, London',
-    phone: '2345678901',
-  },
-  {
-    id: 3,
-    name: 'Aretha Franklin',
-    email: 'aretha@respect.org',
-    password: 'queenOfSoul',
-    address: 'Memphis, Tennessee',
-    phone: '3456789012',
-  },
-  {
-    id: 4,
-    name: 'Kurt Cobain',
-    email: 'kurt@nirvana.com',
-    password: 'nevermind1991',
-    address: 'Aberdeen, Washington',
-    phone: '4567890123',
-  },
-  {
-    id: 5,
-    name: 'Björk Guðmundsdóttir',
-    email: 'bjork@ice.is',
-    password: 'volta2025',
-    address: 'Reykjavík, Iceland',
-    phone: '5678901234',
-  },
-];
+// //   async getUserByEmail(email: string): Promise<User | undefined> {
+// //     return this.usersRepo.findOne({ where: { email } });
+// //   }
+
+// //   async getUserById(id: string): Promise<User | undefined> {
+// //     return this.usersRepo.findOne({ where: { id }, relations: ['orders'] });
+// //   }
+
+// //   async addUser(user: Partial<User>): Promise<User> {
+// //     const newUser = this.usersRepo.create(user);
+// //     return this.usersRepo.save(newUser);
+// //   }
+// // }
+// import { Injectable } from '@nestjs/common';
+// import { InjectRepository } from '@nestjs/typeorm';
+// import { Repository } from 'typeorm';
+// import { User } from '../entities/user.entity';
+
+// @Injectable()
+// export class UsersRepository {
+//   constructor(
+//     @InjectRepository(User)
+//     private readonly usersRepo: Repository<User>,
+//   ) {}
+
+//   async getUsers(page: number, limit: number): Promise<User[]> {
+//     const skip = (page - 1) * limit;
+//     return this.usersRepo.find({ skip, take: limit });
+//   }
+
+//   async findByEmail(email: string): Promise<User | undefined> {
+//     const user = await this.usersRepo.findOne({ where: { email } });
+//     return user ?? undefined;
+//   }
+
+//   async findById(id: string): Promise<User | undefined> {
+//     const user = await this.usersRepo.findOne({
+//       where: { id },
+//       relations: ['orders'],
+//     });
+//     return user ?? undefined;
+//   }
+
+//   async createUser(user: Partial<User>): Promise<User> {
+//     const newUser = this.usersRepo.create(user);
+//     return this.usersRepo.save(newUser);
+//   }
+
+//   async updateUser(id: string, user: Partial<User>): Promise<User> {
+//     await this.usersRepo.update(id, user);
+//     return this.findById(id) as Promise<User>;
+//   }
+
+//   async deleteUser(id: string): Promise<void> {
+//     await this.usersRepo.delete(id);
+//   }
+// }
+
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from 'src/entities/user.entity';
 
 @Injectable()
 export class UsersRepository {
-  async getUsers() {
-    return await users;
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>,
+  ) {}
+
+  async getUserByEmail(email: string): Promise<User | null> {
+    return this.userRepo.findOne({ where: { email } });
+  }
+
+  async addUser(user: Partial<User>): Promise<User> {
+    const newUser = this.userRepo.create(user);
+    return this.userRepo.save(newUser);
+  }
+
+  async getUsers(page: number, limit: number): Promise<User[]> {
+    const skip = (page - 1) * limit;
+    return this.userRepo.find({
+      skip,
+      take: limit,
+      relations: ['orders'],
+    });
+  }
+
+  async updateUser(id: string, userData: Partial<User>): Promise<User> {
+    const user = await this.userRepo.findOne({ where: { id } });
+    if (!user) throw new NotFoundException(`User with id ${id} not found`);
+    Object.assign(user, userData);
+    return this.userRepo.save(user);
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    const result = await this.userRepo.delete(id);
+    if (result.affected === 0)
+      throw new NotFoundException(`User with id ${id} not found`);
   }
 }

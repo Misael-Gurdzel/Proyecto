@@ -1,44 +1,85 @@
-import { Injectable } from '@nestjs/common';
-
-type Product = {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  stock: boolean;
-  imgUrl: string;
-};
-
-const products: Product[] = [
-  {
-    id: 1,
-    name: 'Product 1',
-    description: 'Description for Product 1',
-    price: 100,
-    stock: true,
-    imgUrl: 'https://example.com/product1.jpg',
-  },
-  {
-    id: 2,
-    name: 'Product 2',
-    description: 'Description for Product 2',
-    price: 200,
-    stock: true,
-    imgUrl: 'https://example.com/product2.jpg',
-  },
-  {
-    id: 3,
-    name: 'Product 3',
-    description: 'Description for Product 3',
-    price: 300,
-    stock: false,
-    imgUrl: 'https://example.com/product3.jpg',
-  },
-];
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { Product } from 'src/entities/products.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class ProductsRepository {
-  async getProducts() {
-    return await products;
+  constructor(
+    @InjectRepository(Product)
+    private readonly repo: Repository<Product>,
+  ) {}
+
+  async getProductById(id: string): Promise<Product> {
+    const product = await this.repo.findOne({
+      where: { id },
+      relations: ['category', 'orderDetails'],
+    });
+    if (!product)
+      throw new NotFoundException(`Product with id ${id} not found`);
+    return product;
+  }
+
+  async addProduct(product: Partial<Product>): Promise<Product> {
+    const newProduct = this.repo.create(product);
+    return await this.repo.save(newProduct);
+  }
+
+  async updateProduct(id: string, product: Partial<Product>): Promise<Product> {
+    await this.repo.update(id, product);
+    return await this.getProductById(id);
+  }
+
+  async deleteProduct(id: string): Promise<Product> {
+    const product = await this.getProductById(id);
+    await this.repo.remove(product);
+    return product;
   }
 }
+
+// import { Injectable, NotFoundException } from '@nestjs/common';
+// type Product = {
+//   id: number;
+//   name: string;
+//   description: string;
+//   price: number;
+//   stock: boolean;
+//   imgUrl: string;
+// };
+
+// @Injectable()
+// export class ProductsRepository {
+//   private products: Product[] = [];
+
+//   async getProductById(id: number): Promise<Product> {
+//     const numericId = Number(id);
+//     const product = this.products.find((p) => p.id === numericId);
+//     if (!product)
+//       throw new NotFoundException(`Product with id ${id} not found`);
+//     return product;
+//   }
+
+//   async addProduct(product: Product): Promise<Product> {
+//     this.products.push(product);
+//     return product;
+//   }
+//   async updateProduct(id: number, updated: Partial<Product>): promise<Product> {
+//     const numericId = Number(id);
+//     const index = this.products.findIndex((p) => p.id === numericId);
+//     if (index === -1)
+//       throw new NotFoundException(`Product with id ${id} not found`);
+
+//     this.products[index] = { ...this.products[index], ...updated };
+//     return this.products[index];
+//   }
+//   async deleteProduct(id: number): Promise<Product> {
+//     const numericId = Number(id);
+//     const index = this.products.findIndex((p) => p.id === numericId);
+//     if (index === -1)
+//       throw new NotFoundException(`Product with id ${id} not found`);
+
+//     const deleted = this.products[index];
+//     this.products.splice(index, 1);
+//     return deleted;
+//   }
+// }

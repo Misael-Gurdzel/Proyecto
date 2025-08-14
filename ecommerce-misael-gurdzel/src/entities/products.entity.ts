@@ -1,36 +1,38 @@
-// import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
+import { Category } from './categories.entity';
+import { OrderDetail } from './order-details.entity';
 
-// @Entity('products')
-// export class Product {
-//   @PrimaryGeneratedColumn()
-//   id: number;
+@Entity('products')
+export class Product {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-//   @Column({ length: 100 })
-//   name: string;
+  @Column({ length: 50 })
+  name: string;
 
-//   @Column({ type: 'text' })
-//   description: string;
+  @Column('text')
+  description: string;
 
-//   @Column('decimal', { precision: 10, scale: 2 })
-//   price: number;
+  @Column('decimal', { precision: 10, scale: 2 })
+  price: number;
 
-//   @Column()
-//   stock: boolean;
+  @Column()
+  stock: number;
 
-//   @Column({ name: 'img_url' })
-//   imgUrl: string;
-// }
+  @Column({ default: 'https://via.placeholder.com/150' })
+  imgUrl: string;
 
-// Products
+  @ManyToOne(() => Category, (category) => category.products)
+  category: Category;
 
-// id:number
-
-// name: string
-
-// description: string
-
-// price: number
-
-// stock: boolean
-
-// imgUrl: string
+  @ManyToMany(() => OrderDetail, (orderDetail) => orderDetail.product)
+  @JoinTable()
+  orderDetails: OrderDetail[];
+}

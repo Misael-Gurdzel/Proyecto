@@ -1,46 +1,36 @@
-// import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+// import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Order } from './orders.entity';
 
-// @Entity('users')
-// export class User {
-//   @PrimaryGeneratedColumn()
-//   id: number;
+@Entity('users')
+export class User {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-//   @Column({ length: 100, unique: true })
-//   email: string;
+  @Column({ length: 100 })
+  name: string;
 
-//   @Column({ length: 100 })
-//   name: string;
+  @Column({ unique: true, length: 100 })
+  email: string;
 
-//   @Column()
-//   password: string;
+  @Column()
+  password: string;
 
-//   @Column({ length: 255 })
-//   address: string;
+  @Column({ length: 255 })
+  address: string;
 
-//   @Column({ length: 20 })
-//   phone: string;
+  @Column({ length: 20 })
+  phone: string;
 
-//   @Column({ length: 100, nullable: true })
-//   country?: string;
+  @Column({ length: 50 })
+  country: string;
 
-//   @Column({ length: 100, nullable: true })
-//   city?: string;
-// }
+  @Column({ length: 50 })
+  city: string;
 
-// Users
+  @Column({ default: false })
+  isAdmin: boolean;
 
-// id:number
-
-// email: string
-
-// name: string
-
-// password: string
-
-// address: string
-
-// phone: string
-
-// country?: string | undefined
-
-// city?: string | undefined
+  @OneToMany(() => Order, (order) => order.user)
+  orders: Order[];
+}
