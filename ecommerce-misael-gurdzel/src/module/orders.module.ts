@@ -5,12 +5,12 @@ import { OrderDetail } from '../entities/order-details.entity';
 import { Product } from '../entities/products.entity';
 import { User } from '../entities/user.entity';
 import { OrderService } from '../service/orders.service';
-import { OrderController } from '../controller/orders.controller';
+import { OrdersController } from '../orders/orders.controller';
 import { OrdersRepository } from '../repositories/order.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Order, OrderDetail, Product, User])],
-  controllers: [OrderController],
+  controllers: [OrdersController],
   providers: [OrderService, OrdersRepository],
   exports: [OrderService],
 })

@@ -20,5 +20,7 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "types": ["multer"]
-  }
+  },
+  "include": ["src/**/*", "src/types/**/*"],
+  "exclude": ["node_modules"]
 }

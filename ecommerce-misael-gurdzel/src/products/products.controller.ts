@@ -6,77 +6,75 @@ import {
   Delete,
   Param,
   Body,
+  Query,
+  HttpCode,
+  HttpStatus,
+  UseGuards,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { Product } from 'src/entities/products.entity';
+import {
+  CreateProductDto,
+  UpdateProductDto,
+} from '../products/dto/Products.dto';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../decorators/roles.decorators';
+import { Role } from 'src/auth/roles.enum';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Products')
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
+  // públicos
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  getProducts(
+    @Query('page') page = 1,
+    @Query('limit') limit = 5,
+  ): Promise<Product[]> {
+    return this.productsService.getProducts(Number(page), Number(limit));
+  }
+
   @Get(':id')
-  getProductById(@Param('id') id: string): Promise<Product> {
+  @HttpCode(HttpStatus.OK)
+  getProductById(
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ): Promise<Product> {
     return this.productsService.getProductById(id);
   }
 
+  // protegidos
   @Post()
-  addProduct(@Body() product: Partial<Product>): Promise<Product> {
-    return this.productsService.addProduct(product);
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  @HttpCode(HttpStatus.CREATED)
+  addProduct(@Body() dto: CreateProductDto): Promise<Product> {
+    return this.productsService.addProduct(dto);
   }
 
   @Put(':id')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin) // control de acceso
+  @HttpCode(HttpStatus.OK)
   updateProduct(
-    @Param('id') id: string,
-    @Body() product: Partial<Product>,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: UpdateProductDto,
   ): Promise<Product> {
-    return this.productsService.updateProduct(id, product);
+    return this.productsService.updateProduct(id, dto);
   }
 
   @Delete(':id')
-  deleteProduct(@Param('id') id: string): Promise<Product> {
-    return this.productsService.deleteProduct(id);
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
+  @HttpCode(HttpStatus.OK)
+  async deleteProduct(
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ): Promise<{ id: string }> {
+    await this.productsService.deleteProduct(id);
+    return { id };
   }
 }
-
-// import {
-//   Controller,
-//   Get,
-//   Post,
-//   Put,
-//   Delete,
-//   Param,
-//   Body,
-//   HttpCode,
-//   //UseGuards }
-// } from '@nestjs/common';
-// import { ProductsService } from './products.service';
-// // import { AuthGuard } from '../auth/auth.guard'; // si estás usando guardias
-
-// @Controller('products') // <-- ESTA LÍNEA ES OBLIGATORIA
-// export class ProductsController {
-//   constructor(private readonly productsService: ProductsService) {}
-
-//   @Get(':id')
-//   // @UseGuards(AuthGuard)
-//   getProduct(@Param('id') id: string) {
-//     return this.productsService.getProductById(id);
-//   }
-
-//   @HttpCode(201)
-//   @Post()
-//   addProduct(@Body() product: any) {
-//     return this.productsService.addProduct(product);
-//   }
-
-//   @Put(':id')
-//   // @UseGuards(AuthGuard)
-//   updateProduct(@Param('id') id: string, @Body() product: any) {
-//     return this.productsService.updateProduct(id, product);
-//   }
-
-//   @Delete(':id')
-//   // @UseGuards(AuthGuard)
-//   deleteProduct(@Param('id') id: string) {
-//     return this.productsService.deleteProduct(id);
-//   }
-// }
