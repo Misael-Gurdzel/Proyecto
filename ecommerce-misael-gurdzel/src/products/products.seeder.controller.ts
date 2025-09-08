@@ -1,4 +1,3 @@
-// src/products/products.seeder.controller.ts (opcional: o dentro del controller existente)
 import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';

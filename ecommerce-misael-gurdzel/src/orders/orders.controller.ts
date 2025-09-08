@@ -15,9 +15,10 @@ import { OrdersService } from './orders.service';
 import { Order } from 'src/entities/orders.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Orders')
+@ApiBearerAuth()
 @Controller('orders')
 @UseGuards(AuthGuard) // protegidos por token
 export class OrdersController {

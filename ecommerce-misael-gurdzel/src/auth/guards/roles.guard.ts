@@ -5,7 +5,6 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Role } from '../roles.enum';
 import { UserRequest } from '../../interfaces/user-request.interface';
 
 @Injectable()
@@ -13,21 +12,14 @@ export class RolesGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const requiredRoles = this.reflector.getAllAndOverride<Role[]>('roles', [
-      context.getHandler(),
-      context.getClass(),
-    ]);
+    const request = context.switchToHttp().getRequest<UserRequest>();
+    const user = request.user;
 
-    if (!requiredRoles || requiredRoles.length === 0) {
-      return true;
+    if (!user) {
+      throw new ForbiddenException('No user information found in request');
     }
 
-    const request = context.switchToHttp().getRequest<UserRequest>();
-    const userRoles: Role[] = request.user?.roles ?? [];
-
-    const hasRole = requiredRoles.some((role) => userRoles.includes(role));
-
-    if (!hasRole) {
+    if (!user.isAdmin) {
       throw new ForbiddenException(
         'No tiene permisos para acceder a esta ruta',
       );

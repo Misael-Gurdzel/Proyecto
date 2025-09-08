@@ -12,9 +12,11 @@ import { Order } from 'src/entities/orders.entity';
 
 export class CreateUserDto {
   @ApiHideProperty()
+  @IsOptional()
   id?: string;
 
   @ApiHideProperty()
+  @IsOptional()
   orders?: Order[];
 
   @IsNotEmpty()

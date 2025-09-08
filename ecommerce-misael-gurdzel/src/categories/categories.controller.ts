@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 
 @Controller('categories')
@@ -10,8 +10,8 @@ export class CategoriesController {
     return this.service.getCategories();
   }
 
-  @Get('add-seeder')
-  addCategories() {
-    return this.service.addCategories();
+  @Post('seed')
+  async addCategories() {
+    return await this.service.addCategories();
   }
 }

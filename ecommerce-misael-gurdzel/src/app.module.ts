@@ -29,7 +29,6 @@ import ENV from './config/enviroment';
       useFactory: (configService: ConfigService) =>
         configService.get('typeorm')!,
     }),
-    CategoriesModule,
     OrdersModule,
     FileUploadModule,
     JwtModule.register({

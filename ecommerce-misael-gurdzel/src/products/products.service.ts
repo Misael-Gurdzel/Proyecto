@@ -30,6 +30,7 @@ import { Product } from 'src/entities/products.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from 'src/entities/categories.entity';
+import { CreateProductDto } from './dto/Products.dto';
 
 @Injectable()
 export class ProductsService {
@@ -47,14 +48,12 @@ export class ProductsService {
     return this.productsRepository.getProductById(id);
   }
 
-  async addProduct(
-    product: Partial<Product> & { categoryId: string },
-  ): Promise<Product> {
+  async addProduct(dto: CreateProductDto): Promise<Product> {
     const category = await this.categoryRepo.findOne({
-      where: { id: product.categoryId },
+      where: { id: dto.categoryId },
     });
     if (!category) throw new NotFoundException('Category not found');
-    return this.productsRepository.addProduct({ ...product, category });
+    return this.productsRepository.addProduct({ ...dto, category });
   }
 
   updateProduct(id: string, product: Partial<Product>): Promise<Product> {

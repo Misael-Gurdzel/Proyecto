@@ -5,6 +5,7 @@ import {
   ManyToOne,
   ManyToMany,
   JoinTable,
+  JoinColumn,
 } from 'typeorm';
 import { Category } from './categories.entity';
 import { OrderDetail } from './order-details.entity';
@@ -30,6 +31,7 @@ export class Product {
   imgUrl: string;
 
   @ManyToOne(() => Category, (category) => category.products)
+  @JoinColumn({ name: 'categoryId' })
   category: Category;
 
   @ManyToMany(() => OrderDetail, (orderDetail) => orderDetail.product)

@@ -32,7 +32,7 @@ export class AuthService {
       throw new BadRequestException('Credenciales incorrectas');
 
     const payload = {
-      id: foundUser.id,
+      sub: foundUser.id,
       email: foundUser.email,
       isAdmin: foundUser.isAdmin,
     };
