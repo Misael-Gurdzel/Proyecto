@@ -67,4 +67,5 @@ export class LoginDto {
   @IsNotEmpty()
   password: string;
 }
+
 export class UpdateUserDto extends PartialType(CreateUserDto) {}

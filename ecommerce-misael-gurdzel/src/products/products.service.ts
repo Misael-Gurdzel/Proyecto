@@ -1,29 +1,3 @@
-// import { Injectable } from '@nestjs/common';
-// import { ProductsRepository } from './products.repository';
-// import { Product } from 'src/entities/products.entity';
-
-// @Injectable()
-// export class ProductsService {
-//   constructor(private readonly productsRepository: ProductsRepository) {}
-
-//   getProductById(id: string): Promise<Product> {
-//     return this.productsRepository.getProductById(id);
-//   }
-
-//   addProduct(product: Partial<Product>): Promise<Product> {
-//     return this.productsRepository.addProduct(product);
-//   }
-
-//   updateProduct(id: string, product: Partial<Product>): Promise<Product> {
-//     return this.productsRepository.updateProduct(id, product);
-//   }
-
-//   deleteProduct(id: string): Promise<Product> {
-//     return this.productsRepository.deleteProduct(id);
-//   }
-// }
-
-// src/products/products.service.ts (agregar list + create con categoryId)
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProductsRepository } from './products.repository';
 import { Product } from 'src/entities/products.entity';
@@ -38,6 +12,8 @@ export class ProductsService {
     private readonly productsRepository: ProductsRepository,
     @InjectRepository(Category)
     private readonly categoryRepo: Repository<Category>,
+    @InjectRepository(Product)
+    private readonly productRepo: Repository<Product>,
   ) {}
 
   async getProducts(page: number, limit: number): Promise<Product[]> {

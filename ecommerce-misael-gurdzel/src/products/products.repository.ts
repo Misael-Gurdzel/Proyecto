@@ -49,4 +49,8 @@ export class ProductsRepository {
   async existsByName(name: string): Promise<boolean> {
     return !!(await this.repo.findOne({ where: { name } }));
   }
+
+  async increaseProduct(id: string): Promise<Product | null> {
+    return await this.getProductById(id);
+  }
 }

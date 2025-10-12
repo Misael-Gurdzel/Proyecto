@@ -1,4 +1,4 @@
-// src/products/dto/products.dto.ts
+import { PartialType } from '@nestjs/swagger';
 import {
   IsNotEmpty,
   IsString,
@@ -38,4 +38,4 @@ export class CreateProductDto {
   categoryId: string;
 }
 
-export class UpdateProductDto extends CreateProductDto {}
+export class UpdateProductDto extends PartialType(CreateProductDto) {}

@@ -1,4 +1,3 @@
-// // src/orders/orders.controller.ts (proteger rutas según pedido)
 import {
   Controller,
   Post,
@@ -10,6 +9,7 @@ import {
   HttpCode,
   HttpStatus,
   ParseUUIDPipe,
+  Req,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { Order } from 'src/entities/orders.entity';
@@ -37,9 +37,12 @@ export class OrdersController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async getOrder(@Param('id', new ParseUUIDPipe()) id: string): Promise<Order> {
+  async getOrder(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Req() req,
+  ): Promise<Order> {
     try {
-      return await this.ordersService.getOrder(id);
+      return await this.ordersService.getOrder(id, req.user);
     } catch (error) {
       console.error(error);
       throw new InternalServerErrorException('Failed to get order');

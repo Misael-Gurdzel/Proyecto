@@ -26,7 +26,7 @@ export class FileUploadService {
       throw new NotFoundException('Error al cargar la imagen en Cloudinary...');
     }
 
-    //* Modificar el proucto
+    //* Modificar el producto
     await this.productRepository.update(productId, {
       imgUrl: response.secure_url,
     });

@@ -53,9 +53,18 @@ export class UsersRepository {
     return this.userRepo.save(user);
   }
 
+  async findUserById(id: string): Promise<User | null> {
+    const user = await this.userRepo.findOne({ where: { id } });
+    return user;
+  }
+
   async deleteUser(id: string): Promise<void> {
     const result = await this.userRepo.delete(id);
     if (result.affected === 0)
       throw new NotFoundException(`User with id ${id} not found`);
+  }
+
+  async save(user: User): Promise<User> {
+    return await this.userRepo.save(user);
   }
 }

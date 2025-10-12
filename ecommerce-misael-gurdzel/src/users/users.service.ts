@@ -11,13 +11,13 @@ export class UsersService {
     limit: number,
   ): Promise<Omit<User, 'password'>[]> {
     const users = await this.usersRepository.getUsers(page, limit);
-    return users.map(({ password: _, ...rest }) => rest);
+    return users.map(({ password, ...rest }) => rest);
   }
 
   async getUserByIdWithOrders(id: string) {
     const user = await this.usersRepository.getUserById(id);
     if (!user) throw new NotFoundException(`User with id ${id} not found`);
-    const { password: _, isAdmin, ...safe } = user;
+    const { password, isAdmin, ...safe } = user;
     return { ...safe }; // en esta vista NO exponer isAdmin
   }
 
@@ -30,7 +30,7 @@ export class UsersService {
     user: Partial<User>,
   ): Promise<Omit<User, 'password'>> {
     const updated = await this.updateUser(id, user);
-    const { password: _, ...safe } = updated;
+    const { password, ...safe } = updated;
     return safe;
   }
 
@@ -51,3 +51,23 @@ export class UsersService {
     return this.usersRepository.addUser(user);
   }
 }
+
+// //*Buscar un usuario por id
+// async findById(id: string): Promise<User | null> {
+//   return await this.usersRepository.findOne({ where: { id } });
+// }
+
+// //* Guardadr un usuario (crear o actualizar)
+// async save(user: User): Promise<User> {
+//   return await this.usersRepository.save(user);
+// }
+
+// //*Hacer admin a un usuario
+// async makeAdmin(id: string): Promise<User> {
+//   const user = await this.findById(id);
+//   if (!user) {
+//     throw new NotFoundException(`User with id ${id} not found`);
+//   }
+//   user.isAdmin = true;
+//   return await this.save(user);
+// }
