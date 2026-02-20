@@ -63,4 +63,22 @@ export class OrdersRepository {
     if (!order) throw new NotFoundException(`Order with id ${id} not found`);
     return order;
   }
+
+  async findById(id: string): Promise<Order | null> {
+    return await this.orderRepo.findOne({
+      where: { id },
+      relations: ['user', 'orderDetails'],
+    });
+  }
+
+  //*esto es para obtener todas las ordenes
+  // async getAllOrders(): Promise<Order[]> {
+  //   return await this.orderRepo.find({
+  //     relations: ['user', 'orderDetails', 'orderDetails.product'],
+  //   });
+  // }
+
+  // async deleteOrder(id: string): Promise<void> {
+  //   await this.orderRepo.delete(id);
+  // }
 }

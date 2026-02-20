@@ -49,3 +49,42 @@ export class OrdersController {
     }
   }
 }
+
+//*esto es para obtener todas las ordenes
+// @Get('orders')
+// @UseGuards(AuthGuard, RolesGuard)
+// @Roles(Role.Admin)
+// @HttpCode(HttpStatus.OK)
+// async getAllOrders(): Promise<Order[]> {
+//   try {
+//     const orders = await this.ordersService.getAllOrders();
+
+//     if (!orders || orders.length === 0) {
+//       throw new NotFoundException('No hay órdenes creadas');
+//     }
+
+//     return orders;
+//   } catch (error) {
+//     console.error(error);
+//     throw new InternalServerErrorException('Error al obtener las órdenes');
+//   }
+// }
+
+//** */
+// @Delete(':id')
+// @UseGuards(AuthGuard)
+// @Roles(Role.Admin)
+// async deletOrder(@Param('id', new ParseUUIDPipe()) id: string) {
+//   return await this.ordersService.deleteOrder(id);
+// }
+
+//**borra || cancelar una orden  */
+//  @ApiBearerAuth()
+//         @UseGuards(AuthGuard)
+//         @HttpCode(200)
+//         @Delete(':id')
+//         async deleteOrder(
+//             @Param('id', new ParseUUIDPipe()) id: string
+//         ) {
+//             return this.ordersService.deleteOrder(id);
+//         }

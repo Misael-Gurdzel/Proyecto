@@ -9,6 +9,9 @@ export class Category {
   @Column({ length: 50, unique: true })
   name: string;
 
+  @Column({ default: true })
+  isActive: boolean;
+
   // Relación con productos (1:N)
   @OneToMany(() => Product, (product: Product) => product.category)
   products: Product[];

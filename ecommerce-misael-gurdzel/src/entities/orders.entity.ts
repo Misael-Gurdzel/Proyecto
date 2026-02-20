@@ -28,6 +28,11 @@ export class Order {
   @Column('decimal', { default: 0 })
   total: number;
 
+  // @Column({
+  //   type: 'enum',
+  //   enum: OrderStatus.PENDING,
+  //   default: OrderStatus.PENDING,
+  //})
   @ManyToOne(() => User, (user) => user.orders)
   user: User;
 
