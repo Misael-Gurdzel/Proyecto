@@ -2,22 +2,33 @@ import { Link } from "react-router-dom";
 
 export default function Navbar() {
   const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
+
+  let isAdmin = false;
+
+  if (token) {
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      isAdmin = payload.isAdmin;
+    } catch (error) {
+      console.error("Error decodificando token:", error);
+    }
+  }
 
   const logout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("role");
     window.location.reload();
   };
 
   return (
     <nav className="navbar">
       <div className="nav-left">
-        <Link to="/" className="logo">E-Commerce</Link>
+        <Link to="/" className="logo">
+          E-Commerce
+        </Link>
       </div>
 
       <div className="nav-right">
-        {role === "admin" && (
+        {isAdmin && (
           <Link to="/admin" className="admin-btn">
             Admin
           </Link>

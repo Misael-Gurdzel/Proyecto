@@ -1,12 +1,47 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+export default function Login() {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login:", { email, password });
+    setError("");
+
+    try {
+      const response = await fetch("http://localhost:3001/auth/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Credenciales incorrectas");
+      }
+
+      const data = await response.json();
+
+      // 🔥 Guardamos el token
+      localStorage.setItem("token", data.token);
+
+      console.log("Login exitoso");
+
+      // 🔥 Redirigimos al Home
+      navigate("/", { replace: true });
+
+      // 🔥 Recargamos para que el Navbar se actualice
+      window.location.reload();
+
+    } catch (err) {
+      console.error("Error en login:", err);
+      setError("Email o contraseña incorrectos");
+    }
   };
 
   return (
@@ -35,5 +70,3 @@ const Login = () => {
     </div>
   );
 };
-
-export default Login;

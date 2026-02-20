@@ -6,7 +6,7 @@ import Login from "./pages/Login";
 import Profile from "./pages/Profile.tsx";
 import Admin from "./pages/Admin";
 import Products from "./pages/Products";
-import Users from "./pages/users.tsx";
+import Users from "./pages/Users.tsx";
 import Categories from "./pages/Categories";
 
 function App() {

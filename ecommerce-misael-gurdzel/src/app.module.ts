@@ -28,6 +28,7 @@ import ENV from './config/enviroment';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) =>
         configService.get('typeorm')!,
+      
     }),
     OrdersModule,
     FileUploadModule,

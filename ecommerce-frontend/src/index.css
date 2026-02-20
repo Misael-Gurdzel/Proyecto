@@ -232,3 +232,46 @@ body {
   background-color: #4cc9f0;
   color: #0d1b2a;
 }
+
+ /*users*/
+.users-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.users-container h1 {
+  margin-bottom: 20px;
+}
+
+/* TABLA */
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* HEADER */
+.users-table thead {
+  background-color: #e9ecef;
+}
+
+.users-table th {
+  padding: 14px;
+  text-align: left;
+  font-size: 14px;
+  border: 1px solid #dee2e6;
+}
+
+/* FILAS */
+.users-table td {
+  padding: 12px;
+  border: 1px solid #dee2e6;
+  font-size: 14px;
+}
+
+/* HOVER */
+.users-table tbody tr:hover {
+  background-color: #f1f3f5;
+}
